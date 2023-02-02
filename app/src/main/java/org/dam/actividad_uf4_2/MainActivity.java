@@ -3,6 +3,7 @@ package org.dam.actividad_uf4_2;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Size;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -13,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
-    
+
     private int tam;
     private String text;
     private Button sizeBtn;
@@ -28,24 +29,8 @@ public class MainActivity extends AppCompatActivity {
         updateFragment();
         sizeBtn = findViewById(R.id.sizeBtn);
         sizeBtn.setOnClickListener(l -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.dialog_size_title);
-
-            EditText input = new EditText(this);
-            input.setInputType(InputType.TYPE_CLASS_NUMBER);
-            builder.setView(input);
-
-            builder.setPositiveButton(R.string.dialog_accept, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    tam = Integer.parseInt(input.getText().toString());
-                    updateFragment();
-                }
-            });
-            builder.setNegativeButton(R.string.dialog_cancel, (d, w) -> {
-                d.cancel();
-            });
-            builder.show();
+            SizeDialog sizeDialog = new SizeDialog();
+            sizeDialog.show(getSupportFragmentManager(), "SizeDialog");
         });
     }
 
@@ -77,7 +62,17 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateFragment() {
+    public int getTam() {
+        return tam;
+    }
+
+    public void updateData(int size, String text) {
+        this.tam = size;
+        if (text != null)
+            this.text = text;
+    }
+
+    public void updateFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         frag = InicioFragment.newInstance(tam, text);
         transaction.replace(R.id.fragCont, frag);
